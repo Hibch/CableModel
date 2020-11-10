@@ -30,3 +30,10 @@ sur_screen_out()={};
   sur_wire(0) = news; Disk(news) = {x0,y0,0,dc/2+ti+txlpe+to};
   sur_wire(1) = news; Disk(news) = {x1,y1,0,dc/2+ti+txlpe+to};
   sur_wire(2) = news; Disk(news) = {x2,y2,0,dc/2+ti+txlpe+to};
+
+sur_tape()={};
+  sur_wire(0) = news; Disk(news) = {x0,y0,0,dc/2+ti+txlpe+to+tt};
+  sur_wire(1) = news; Disk(news) = {x1,y1,0,dc/2+ti+txlpe+to+tt};
+  sur_wire(2) = news; Disk(news) = {x2,y2,0,dc/2+ti+txlpe+to+tt};
+
+  // test
