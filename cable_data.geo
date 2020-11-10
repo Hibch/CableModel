@@ -16,6 +16,12 @@ tbed = 3*mm; // Bedding
 ta = 5*mm; // Armour
 tos = 4*mm; // Outer serving
 
+dtot = 2*67.3*mm;
+dinf = 5*dtot; // Electromagnetic domain
+depth_cable = 2; // [m] Laying depth of the cable
+dinf_th = 3; //thermal analysis
+dinf_th_water = 3 - depth_cable;
+
 //=================================================
 //               Material properties
 //=================================================
