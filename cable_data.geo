@@ -6,7 +6,7 @@ mm = 1e-3;
 
 dc = 16.9*mm; // Diameter of conductor
 ti = 1.4*mm; // Conductor screen
-txple = 9*mm; // Insulation
+txlpe = 9*mm; // Insulation
 to = 1.4*mm; // Insulation screen
 tt = 0.6*mm; //Swelling tape
 tms = 2.3*mm; // Metallic sheath
