@@ -57,3 +57,34 @@ kappa_xlpe = 0.46;
 
 kappa_seabed = 2;
 kappa_seawater = 0.593;
+
+//=================================================
+//                Mesh properties
+//=================================================
+DefineConstant[ s = {1., Name "Parameters/Global mesh size factor"}];
+
+//=================================================
+//              Physical numbers
+//=================================================
+WATER_IN = 900;
+WATER_OUT = 901;
+WIRE = 1000;
+
+CONDUCTOR_SCREEN = 2000;
+XLPE = 3000;
+INSULATION_SCREEN = 4000;
+TAPE = 5000;
+METALLIC_SHEATH = 6000;
+ANTI_CORR_SHEATH = 7000;
+
+BEDDING = 8000;
+ARMOUR = 9000;
+OUTER_SERVING = 10000;
+
+SOIL_EM = 11000;
+SOIL_TH = 12000;
+
+OUTBND_EM = 1111;
+OUTBND_TH = 2222;
+
+INTERFACE_WATER_SOIL = 3333;

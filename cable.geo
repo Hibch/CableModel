@@ -94,8 +94,54 @@ sur_waterout = news; Rectangle(news) = {-dinf_th, depth_cable, 0, 2*dinf_th, din
 
 all_sur() = Surface{:};
 BooleanFragments{ Surface{all_sur()}; Delete; }{}
+sur_soil = {52}; // the EM dom has been substracted
+//Printf("",all_sur());
+all_sur() = Surface{:};
 bnd() = CombinedBoundary{ Surface{all_sur()}; };
 Printf("",bnd());
 
 bnd_EMdom() = CombinedBoundary{ Surface{sur_EMdom}; };
 Printf("",bnd_EMdom());
+
+
+// Adjusting the characteristic mesh size
+cl = dtot/s;
+// Characteristic length { Point{:} } = cl;
+Characteristic Length { PointsOf{ Surface{sur_bed, sur_arm, sur_out}; } } = cl/16;
+Characteristic Length { PointsOf{ Surface{sur_wire, sur_screen_in, sur_insul, sur_screen_out}; } } = cl/32;
+Characteristic Length { PointsOf{ Surface{sur_tape, sur_metal_sheath, sur_anti_cor_sheath}; } } = cl/32;
+Characteristic Length { PointsOf{ Surface{sur_fill}; } } = cl/32;
+Characteristic Length { PointsOf{ Line{bnd_EMdom(1)}; } } = 2*cl;
+Characteristic Length { PointsOf{ Surface{sur_waterout}; } } = 5*cl;
+
+Printf("",sur_wire());
+
+
+//===============================================
+//  Physical regions => link to pro-file and FE
+//===============================================
+
+Physical Surface("wire 1", WIRE+0) = sur_wire(0);
+Physical Surface("wire 2", WIRE+1) = sur_wire(2);
+Physical Surface("wire 3", WIRE+2) = sur_wire(1);
+
+Physical Surface("conductour screen", CONDUCTOR_SCREEN) = sur_screen_in();
+Physical Surface("XLPE", XLPE) = sur_insul();
+Physical Surface("insulation screen", INSULATION_SCREEN) = sur_screen_out();
+Physical Surface("swelling tape", TAPE) = sur_tape();
+Physical Surface("metallic sheath", METALLIC_SHEATH) = sur_metal_sheath();
+Physical Surface("anti corrosion sheath", ANTI_CORR_SHEATH) = sur_anti_cor_sheath();
+
+Physical Surface("water in cable", WATER_IN) = {sur_fill};
+
+Physical Surface("bedding", BEDDING) = sur_bed();
+Physical Surface("armour", ARMOUR) = sur_arm();
+Physical Surface("outer serving", OUTER_SERVING) = sur_out();
+
+Physical Surface("Soil (EM)", SOIL_EM) = sur_EMdom();
+Physical Surface("Soil (thermal)", SOIL_TH) = sur_soil();
+Physical Surface("Water above soil", WATER_OUT) = sur_waterout();
+
+Physical Line("Outer boundary (EM)", OUTBND_EM) = bnd_EMdom(1);
+Physical Line("Outer boundary (TH)", OUTBND_TH) = bnd();
+Physical Line("Air/soil interface", INTERFACE_WATER_SOIL) = 38;
