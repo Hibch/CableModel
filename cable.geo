@@ -62,17 +62,23 @@ BooleanFragments{
   Delete;
   }{}
 
-  sur_wire() = {1,2,3};
-  sur_screen_in() = {4,5,6};
-  sur_insul() = {7,8,9};
-  sur_screen_out() = {10,11,12};
-  sur_tape() = {13,14,15};
-  sur_metal_sheath() = {16,17,18};
-  sur_anti_cor_sheath() = {19,20,21};
-  sur_fill() = {22,23,24,25};
-  sur_bed() = {26};
-  sur_arm() = {27};
-  sur_out() = {28};
+sur_wire() = {1,2,3};
+sur_screen_in() = {4,5,6};
+sur_insul() = {7,8,9};
+sur_screen_out() = {10,11,12};
+sur_tape() = {13,14,15};
+sur_metal_sheath() = {16,17,18};
+sur_anti_cor_sheath() = {19,20,21};
+sur_fill() = {22,23,24,25};
+sur_bed() = {26};
+sur_arm() = {27};
+sur_out() = {28};
+
+/*
+sur_wire_cover0() = {sur_wire(0), sur_screen_in(0), sur_insul(0), sur_screen_out(0), sur_tape(0), sur_metal_sheath(0), sur_anti_cor_sheath(0)};
+sur_wire_cover1() = {sur_wire(1), sur_screen_in(1), sur_insul(1), sur_screen_out(1), sur_tape(1), sur_metal_sheath(1), sur_anti_cor_sheath(1)};
+sur_wire_cover2() = {sur_wire(2), sur_screen_in(2), sur_insul(2), sur_screen_out(2), sur_tape(2), sur_metal_sheath(2), sur_anti_cor_sheath(2)};
+*/
 
 //===============================================
 //           Around the cable
@@ -107,14 +113,12 @@ Printf("",bnd_EMdom());
 // Adjusting the characteristic mesh size
 cl = dtot/s;
 // Characteristic length { Point{:} } = cl;
-Characteristic Length { PointsOf{ Surface{sur_bed, sur_arm, sur_out}; } } = cl/16;
-Characteristic Length { PointsOf{ Surface{sur_wire, sur_screen_in, sur_insul, sur_screen_out}; } } = cl/32;
-Characteristic Length { PointsOf{ Surface{sur_tape, sur_metal_sheath, sur_anti_cor_sheath}; } } = cl/32;
-Characteristic Length { PointsOf{ Surface{sur_fill}; } } = cl/32;
+Characteristic Length { PointsOf{ Surface{sur_bed(), sur_arm(), sur_out()}; } } = cl/16;
+Characteristic Length { PointsOf{ Surface{sur_wire(), sur_screen_in(), sur_insul(), sur_screen_out()}; } } = cl/32;
+Characteristic Length { PointsOf{ Surface{sur_tape(), sur_metal_sheath(), sur_anti_cor_sheath()}; } } = cl/32;
+Characteristic Length { PointsOf{ Surface{sur_fill()}; } } = cl/32;
 Characteristic Length { PointsOf{ Line{bnd_EMdom(1)}; } } = 2*cl;
-Characteristic Length { PointsOf{ Surface{sur_waterout}; } } = 5*cl;
-
-Printf("",sur_wire());
+Characteristic Length { PointsOf{ Surface{sur_waterout()}; Line{bnd()}; } } = 5*cl;
 
 
 //===============================================
