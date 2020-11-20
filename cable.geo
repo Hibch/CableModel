@@ -148,4 +148,4 @@ Physical Surface("Water above soil", WATER_OUT) = sur_waterout();
 
 Physical Line("Outer boundary (EM)", OUTBND_EM) = bnd_EMdom(1);
 Physical Line("Outer boundary (TH)", OUTBND_TH) = bnd();
-Physical Line("Air/soil interface", INTERFACE_WATER_SOIL) = 38;
+Physical Line("Water/soil interface", INTERFACE_WATER_SOIL) = 38;
