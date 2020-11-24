@@ -136,7 +136,7 @@ Physical Surface("swelling tape", TAPE) = sur_tape();
 Physical Surface("metallic sheath", METALLIC_SHEATH) = sur_metal_sheath();
 Physical Surface("anti corrosion sheath", ANTI_CORR_SHEATH) = sur_anti_cor_sheath();
 
-Physical Surface("water in cable", WATER_IN) = {sur_fill};
+Physical Surface("water in cable", WATER_IN) = {sur_fill()};
 
 Physical Surface("bedding", BEDDING) = sur_bed();
 Physical Surface("armour", ARMOUR) = sur_arm();
