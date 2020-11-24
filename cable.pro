@@ -21,7 +21,7 @@ DefineConstant[
   p_ = {"", Name "GetDP/2PostOperationChoices", Visible 1, Closed 1}
 ];
 
-Group ={
+Group {
    WaterInCable = Region[{WATER_IN}];
    WaterAboveSoil = Region[{WATER_OUT}];
    WaterEM = Region[{WaterInCable}];
@@ -58,6 +58,7 @@ Group ={
    //Cable = Region[{Inds, ConductorScreen, XLPE, InsuationScreen, SwellingTape, MetallicSheath, AntiCorrosionSheath, Bedding, Armour, OuterServing, WaterInCable}];
 
    //Magnetodynamics
+   Sur_Dirichlet_Mag = Region[{OUTBND_EM}];
    SurfaceGe0 = Region[{OUTBND_EM}]; // NB: =0 on this boundary
 
    DomainCC_Mag  = Region[ {WaterEM,Inds} ];
@@ -65,13 +66,14 @@ Group ={
    DomainC_Mag   = Region[ {Steel,Lead} ];
 
    DomainS0_Mag  = Region[ {} ]; // If imposing source with jS0[]
-   DomainS_Mag   = Region[ {Inds}} ]; // If using Current_2D, it allows accounting for the dependance of sigma with T
+   DomainS_Mag   = Region[ {Inds} ]; // If using Current_2D, it allows accounting for the dependance of sigma with T
 
    DomainCwithI_Mag = Region[ {} ];
    Domain_Mag = Region[ {DomainCC_Mag, DomainC_Mag} ];
 
     //Electrodynamics
     Domain_Ele = Region[{Domain_Mag}]; // same domain as Magnetodynamics
+    Sur_Dirichlet_Ele = Region[{OUTBND_EM}]; // boundary
 
     //Thermal domain
     Vol_Thermal = Region[{Domain_Mag, WaterTH, SoilTH}];
@@ -110,7 +112,7 @@ Function {
 
   If (!Flag_sigma_funcT)
     sigma[Inds]      = sigma_al;
-    sigma[Lead]      = sigma_lead
+    sigma[Lead]      = sigma_lead;
   Else
     sigma[Inds]      = sigma_al/fT_cu[$1];
     sigma[Lead]      = sigma_lead/fT_lead[$1];
@@ -159,3 +161,68 @@ Function {
   // example of function with wind speed
   //h[] = 7.371 + 6.43*v_wind^0.75; // 1, 10 ... Convective coefficient [W/(m^2 K)]
 }
+
+Constraint {
+  // All the constraint hereafter must be adapted to your problem. Commented definitions are kept as example.
+
+  // Electrical constraints
+  { Name ElectricScalarPotential;
+    Case {
+      { Region Ind_1; Value V0; TimeFunction F_Cos_wt_p[]{2*Pi*Freq, Pa}; }
+      { Region Ind_2; Value V0; TimeFunction F_Cos_wt_p[]{2*Pi*Freq, Pb}; }
+      { Region Ind_3; Value V0; TimeFunction F_Cos_wt_p[]{2*Pi*Freq, Pc}; }
+
+      { Region Sur_Dirichlet_Ele; Value 0; }
+    }
+  }
+  /*{ Name ZeroElectricScalarPotential; // Only if second order basis functions - Ignore
+    Case {
+      // For k In {1:3}
+      //   { Region Ind~{k}; Value 0; }
+      // EndFor
+      // { Region Sur_Dirichlet_Ele; Value 0; }
+    }*/
+  }
+
+  // Magnetic constraints
+  { Name MagneticVectorPotential_2D;
+    Case {
+      { Region Sur_Dirichlet_Mag; Value 0.; }
+    }
+  }
+  { Name Voltage_2D;
+    Case {
+    }
+  }
+  { Name Current_2D;
+    Case {
+      // constraint used if Inds in DomainS_Mag
+      { Region Ind_1; Value I; TimeFunction F_Cos_wt_p[]{2*Pi*Freq, Pa}; }
+      { Region Ind_2; Value I; TimeFunction F_Cos_wt_p[]{2*Pi*Freq, Pb}; }
+      { Region Ind_3; Value I; TimeFunction F_Cos_wt_p[]{2*Pi*Freq, Pc}; }
+    }
+  }
+
+  // Thermal constraints
+  { Name DirichletTemp ;
+    Case {
+      { Type Assign; Region Sur_Dirichlet_Thermal ; Value Tambient[]; }
+    }
+  }
+
+}
+
+
+Include "Jacobian_Integration.pro"; // Normally no modification is needed
+
+// The following files contain: basis functions, formulations, resolution, post-processing, post-operation
+// Some adaptations may be needed
+If (Flag_AnalysisType ==0)
+  Include "electrodynamic_formulation.pro";
+EndIf
+If (Flag_AnalysisType ==1)
+  Include "darwin_formulation.pro";
+EndIf
+If (Flag_AnalysisType > 2)
+  Include "magneto-thermal_formulation.pro";
+EndIf
