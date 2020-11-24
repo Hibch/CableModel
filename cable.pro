@@ -54,7 +54,8 @@ Group ={
     Inds   += Region[{(WIRE+k-1)}];
    EndFor
 
-   Cable = Region[{Inds, ConductorScreen, XLPE, InsuationScreen, SwellingTape, MetallicSheath, AntiCorrosionSheath, Bedding, Armour, OuterServing, WaterInCable}];
+   Cable = Region[{Inds, XLPE, Polyethylene, Steel, Lead, Polypropylene}];
+   //Cable = Region[{Inds, ConductorScreen, XLPE, InsuationScreen, SwellingTape, MetallicSheath, AntiCorrosionSheath, Bedding, Armour, OuterServing, WaterInCable}];
 
    //Magnetodynamics
    SurfaceGe0 = Region[{OUTBND_EM}]; // NB: =0 on this boundary
@@ -81,4 +82,80 @@ Group ={
     Sur_Dirichlet_Thermal = Region[{OUTBND_TH}];
     Domain_Thermal = Region[{Vol_Thermal, Sur_Convection_Thermal}];
 
+}
+
+Function {
+  mu0 = 4.e-7 * Pi;
+  eps0 = 8.854187818e-12;
+
+  // TO DEFINE FOR ALL MATERIALS
+  nu[Region[{Water, Inds}]]  = 1./mu0;
+  nu[Region[{XLPE, Polyethylene, Lead, Polypropylene, Soil}]]  = 1./mu0;
+  nu[Region[{Steel}]]  = 1./(mu0*mur_steel);
+
+
+  sigma[Steel]  = sigma_steel;
+  sigma[XLPE]  = sigma_xlpe;
+  sigma[Polyethylene]  = sigma_polyethylene;
+  sigma[Polypropylene]  = sigma_polypropylene;
+  sigma[Lead]  = sigma_lead;
+  sigma[Soil]  = sigma_seabed;
+  sigma[Water]  = sigma_seawater;
+
+  // Examples of nonlinear functions for the sigma dependence with the temperature
+  // Attention alpha_cu, alpha_al, Tref have to be defined somewhere before this
+  //fT_cu[] = (1+alpha_cu*($1-Tref)); // $1 is current temperature in [K], alpha in [1/K]
+  fT_al[] = (1+alpha_al*($1-Tref));
+  fT_lead[] = (1+alpha_lead*($1-Tref));
+
+  If (!Flag_sigma_funcT)
+    sigma[Inds]      = sigma_al;
+    sigma[Lead]      = sigma_lead
+  Else
+    sigma[Inds]      = sigma_al/fT_cu[$1];
+    sigma[Lead]      = sigma_lead/fT_lead[$1];
+  EndIf
+
+  epsilon[Region[{Steel, Inds}]] = eps0;
+  epsilon[Region[{Polyethylene}]] = eps0*epsr_polyethylene;
+  epsilon[Region[{Polypropylene}]] = eps0*epsr_polypropylene;
+  epsilon[Region[{XLPE}]] = eps0*epsr_xlpe;
+  epsilon[Region[{Lead}]] = eps0*epsr_lead;
+
+  Freq = 50; // Adapt if needed
+  Omega = 2*Pi*Freq;
+
+  // Example for a three phase system
+  Pa = 0.; Pb = -120./180.*Pi; Pc = -240./180.*Pi;
+  I = 406; // maximum value current in data sheet
+  js0[Ind_1] = Vector[0,0,1] * I / SurfaceArea[] * F_Cos_wt_p[]{Omega, Pa};
+  js0[Ind_2] = Vector[0,0,1] * I / SurfaceArea[] * F_Cos_wt_p[]{Omega, Pb};
+  js0[Ind_3] = Vector[0,0,1] * I / SurfaceArea[] * F_Cos_wt_p[]{Omega, Pc};
+
+  Ns[]= 1;
+  Sc[]= SurfaceArea[];
+
+  // second order calculation
+  _deg2_hierarchical = 0; // change value if you wanna try second order basis functions
+  //Flag_Degree_a = _deg2_hierarchical ? 2 : 1;
+  //Flag_Degree_v = _deg2_hierarchical ? 2 : 1;
+
+  // thermal parameters
+  Tambient[] = Tamb; // [K]
+
+  // thermal conductivities [W/(m K)]
+  k[Steel] = kappa_steel;
+  k[Inds] = kappa_al;
+  k[Polyethylene] = kappa_polyethylene;
+  k[Polypropylene] = kappa_polypropylene;
+  k[Lead] = kappa_lead;
+  k[XLPE] = kappa_xlpe;
+
+  // * heat conduction mechanism is the main heat transfer mechanism for an underground cable system
+  // * all materials have constant thermal properties, including the thermal resistivity of the soil
+  // * radiation and convection are not considered
+
+  // * force convection on ground surface due to wind: h = 7.371 + 6.43*v^0.75
+  // example of function with wind speed
+  //h[] = 7.371 + 6.43*v_wind^0.75; // 1, 10 ... Convective coefficient [W/(m^2 K)]
 }

@@ -29,6 +29,7 @@ dinf_th_water = 3 - depth_cable;
 epsr_polyethylene = 2.25;
 epsr_polypropylene = 2.2;
 epsr_xlpe = 2.5;
+epsr_lead = 15;
 
 epsr_seabed = 30;
 epsr_seawater = 81;
@@ -44,6 +45,7 @@ sigma_al = 3.77e7;
 sigma_polyethylene = 1e-18;
 sigma_polypropylene = 6.25e-15;
 sigma_xlpe = 1e-18;
+sigma_lead = 4.87e6;
 
 sigma_seabed = 1.5;
 sigma_seawater = 4;
@@ -54,9 +56,16 @@ kappa_al = 237;
 kappa_polyethylene = 0.46;
 kappa_polypropylene = 0.1;
 kappa_xlpe = 0.46;
+kappa_lead = 33;
 
 kappa_seabed = 2;
 kappa_seawater = 0.593;
+
+Tamb = 273.15 + 10; // K
+Tref = 273.15 + 0; // K
+alpha_al = 0.00390; // 1/K
+alpha_lead = 39e-4;
+
 
 //=================================================
 //                Mesh properties
