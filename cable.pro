@@ -84,6 +84,7 @@ Group {
     Sur_Dirichlet_Thermal = Region[{OUTBND_TH}];
     Domain_Thermal = Region[{Vol_Thermal, Sur_Convection_Thermal}];
 
+    DomainDummy = Region[{12345}];
 }
 
 Function {
@@ -100,7 +101,7 @@ Function {
   sigma[XLPE]  = sigma_xlpe;
   sigma[Polyethylene]  = sigma_polyethylene;
   sigma[Polypropylene]  = sigma_polypropylene;
-  sigma[Lead]  = sigma_lead;
+  //sigma[Lead]  = sigma_lead;
   sigma[Soil]  = sigma_seabed;
   sigma[Water]  = sigma_seawater;
 
@@ -119,6 +120,7 @@ Function {
   EndIf
 
   epsilon[Region[{Steel, Inds}]] = eps0;
+  epsilon[Region[{Water}]] = eps0*epsr_seawater;
   epsilon[Region[{Polyethylene}]] = eps0*epsr_polyethylene;
   epsilon[Region[{Polypropylene}]] = eps0*epsr_polypropylene;
   epsilon[Region[{XLPE}]] = eps0*epsr_xlpe;
@@ -181,8 +183,9 @@ Constraint {
       //   { Region Ind~{k}; Value 0; }
       // EndFor
       // { Region Sur_Dirichlet_Ele; Value 0; }
-    }*/
+    }
   }
+  */
 
   // Magnetic constraints
   { Name MagneticVectorPotential_2D;
