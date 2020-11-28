@@ -54,14 +54,14 @@ Group {
     Inds   += Region[{(WIRE+k-1)}];
    EndFor
 
-   Cable = Region[{Inds, XLPE, Polyethylene, Steel, Lead, Polypropylene}];
+   Cable = Region[{Inds, XLPE, Polyethylene, Steel, Lead, Polypropylene, WaterInCable}];
    //Cable = Region[{Inds, ConductorScreen, XLPE, InsuationScreen, SwellingTape, MetallicSheath, AntiCorrosionSheath, Bedding, Armour, OuterServing, WaterInCable}];
 
    //Magnetodynamics
    Sur_Dirichlet_Mag = Region[{OUTBND_EM}];
    SurfaceGe0 = Region[{OUTBND_EM}]; // NB: =0 on this boundary
 
-   DomainCC_Mag  = Region[ {WaterEM,Inds} ];
+   DomainCC_Mag  = Region[ {WaterEM, Inds} ];
    DomainCC_Mag += Region[ {XLPE, SwellingTape, Polyethylene, Polypropylene} ];
    DomainC_Mag   = Region[ {Steel,Lead} ];
 
