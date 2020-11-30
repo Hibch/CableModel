@@ -57,6 +57,7 @@ sur_arm()={};
 sur_out()={};
   sur_out(0) = news; Disk(news) = {0,0.,0.,r_bed_in+tbed+ta+tos};
 
+
 BooleanFragments{
   Surface{sur_wire(), sur_screen_in(), sur_insul(), sur_screen_out(), sur_tape(), sur_metal_sheath(), sur_anti_cor_sheath(), sur_fill(), sur_bed(), sur_arm(), sur_out()};
   Delete;
@@ -74,11 +75,21 @@ sur_bed() = {26};
 sur_arm() = {27};
 sur_out() = {28};
 
-/*
-sur_wire_cover0() = {sur_wire(0), sur_screen_in(0), sur_insul(0), sur_screen_out(0), sur_tape(0), sur_metal_sheath(0), sur_anti_cor_sheath(0)};
-sur_wire_cover1() = {sur_wire(1), sur_screen_in(1), sur_insul(1), sur_screen_out(1), sur_tape(1), sur_metal_sheath(1), sur_anti_cor_sheath(1)};
-sur_wire_cover2() = {sur_wire(2), sur_screen_in(2), sur_insul(2), sur_screen_out(2), sur_tape(2), sur_metal_sheath(2), sur_anti_cor_sheath(2)};
-*/
+If(Flag_defect_in_XLPE)
+  defect = news; Disk(news) = {x2+dc/2+dd*mm,y2,0.,r_def};
+  BooleanFragments{
+    Surface{sur_insul(), defect};
+    Delete;
+    }{}
+  sur_insul() = {7,8,48};
+  defect = {47};
+EndIf
+
+
+//sur_wire_cover0() = {sur_wire(0), sur_screen_in(0), sur_insul(0), sur_screen_out(0), sur_tape(0), sur_metal_sheath(0), sur_anti_cor_sheath(0)};
+//sur_wire_cover1() = {sur_wire(1), sur_screen_in(1), sur_insul(1), sur_screen_out(1), sur_tape(1), sur_metal_sheath(1), sur_anti_cor_sheath(1)};
+//sur_wire_cover2() = {sur_wire(2), sur_screen_in(2), sur_insul(2), sur_screen_out(2), sur_tape(2), sur_metal_sheath(2), sur_anti_cor_sheath(2)};
+
 
 //===============================================
 //           Around the cable
@@ -120,6 +131,10 @@ Characteristic Length { PointsOf{ Surface{sur_fill()}; } } = cl/32;
 Characteristic Length { PointsOf{ Line{bnd_EMdom(1)}; } } = 2*cl;
 Characteristic Length { PointsOf{ Surface{sur_waterout()}; Line{bnd()}; } } = 5*cl;
 
+If(Flag_defect_in_XLPE)
+  Characteristic Length { PointsOf{ Surface{defect}; } } = cl/32;
+EndIf
+
 
 //===============================================
 //  Physical regions => link to pro-file and FE
@@ -131,6 +146,11 @@ Physical Surface("wire 3", WIRE+2) = sur_wire(1);
 
 Physical Surface("conductour screen", CONDUCTOR_SCREEN) = sur_screen_in();
 Physical Surface("XLPE", XLPE) = sur_insul();
+
+If(Flag_defect_in_XLPE)
+  Physical Surface("defect in xlpe", DEFECT) = defect;
+EndIf
+
 Physical Surface("insulation screen", INSULATION_SCREEN) = sur_screen_out();
 Physical Surface("swelling tape", TAPE) = sur_tape();
 Physical Surface("metallic sheath", METALLIC_SHEATH) = sur_metal_sheath();

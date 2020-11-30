@@ -49,6 +49,7 @@ sigma_lead = 4.87e6;
 
 sigma_seabed = 1.5;
 sigma_seawater = 4;
+sigma_air = 3.33e-6;
 
 // thermal conductivity [W/mK]
 kappa_steel = 50.2;
@@ -60,6 +61,7 @@ kappa_lead = 33;
 
 kappa_seabed = 2;
 kappa_seawater = 0.593;
+kappa_air = 0.025;
 
 Tamb = 273.15 + 10; // K
 Tref = 273.15 + 0; // K
@@ -73,6 +75,8 @@ alpha_lead = 39e-4;
 NbWires = 3;
 V0 = 66e3/1.732; // kV
 
+DefineConstant[Flag_defect_in_XLPE = {0,  Choices{0,1},    Name "{00Parameters/10Defect in XLPE (phase 2)", Highlight "Red"}  dd = {5, Choices{2,5},Name "Parameters/11Distance from conductor defect", Visible Flag_defect_in_XLPE}];
+r_def = 1*mm;
 
 //=================================================
 //                Mesh properties
@@ -88,6 +92,7 @@ WIRE = 1000;
 
 CONDUCTOR_SCREEN = 2000;
 XLPE = 3000;
+DEFECT = 3333;
 INSULATION_SCREEN = 4000;
 TAPE = 5000;
 METALLIC_SHEATH = 6000;

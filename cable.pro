@@ -30,6 +30,11 @@ Group {
 
    ConductorScreen =  Region[{CONDUCTOR_SCREEN}];
    Xlpe = Region[{XLPE}];
+
+   If(Flag_defect_in_XLPE)
+     DefectInXLPE = Region[{DEFECT}];
+   EndIf
+
    InsuationScreen = Region[{INSULATION_SCREEN}];
    SwellingTape = Region[{TAPE}];
    MetallicSheath = Region[{METALLIC_SHEATH}];
@@ -57,12 +62,22 @@ Group {
    Cable = Region[{Inds, XLPE, Polyethylene, Steel, Lead, Polypropylene, WaterInCable}];
    //Cable = Region[{Inds, ConductorScreen, XLPE, InsuationScreen, SwellingTape, MetallicSheath, AntiCorrosionSheath, Bedding, Armour, OuterServing, WaterInCable}];
 
+
+  If(Flag_defect_in_XLPE)
+    Cable += Region[{DefectInXLPE}];
+  EndIf
+
    //Magnetodynamics
    Sur_Dirichlet_Mag = Region[{OUTBND_EM}];
    SurfaceGe0 = Region[{OUTBND_EM}]; // NB: =0 on this boundary
 
    DomainCC_Mag  = Region[ {WaterEM, Inds} ];
    DomainCC_Mag += Region[ {XLPE, SwellingTape, Polyethylene, Polypropylene} ];
+
+   If(Flag_defect_in_XLPE)
+     DomainCC_Mag += Region[{DefectInXLPE}];
+   EndIf
+
    DomainC_Mag   = Region[ {Steel,Lead} ];
 
    DomainS0_Mag  = Region[ {} ]; // If imposing source with jS0[]
@@ -154,6 +169,13 @@ Function {
   k[Polypropylene] = kappa_polypropylene;
   k[Lead] = kappa_lead;
   k[XLPE] = kappa_xlpe;
+
+  If(Flag_defect_in_XLPE)
+    nu[Region[{DefectInXLPE}]]  = 1./mu0;
+    sigma[DefectInXLPE]  = sigma_air;
+    epsilon[Region[{DefectInXLPE}]] = eps0;
+    k[DefectInXLPE] = kappa_air;
+  EndIf
 
   // * heat conduction mechanism is the main heat transfer mechanism for an underground cable system
   // * all materials have constant thermal properties, including the thermal resistivity of the soil

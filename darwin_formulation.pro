@@ -15,8 +15,8 @@ FunctionSpace {
     /*  If (Flag_Degree_a == 2)
 	{ NameOfCoef ae2; // Only OK if homogeneous BC, otherwise specify zero-BC
           EntityType EdgesOf; NameOfConstraint MagneticVectorPotential_2D; }
-      EndIf
-    }*/
+      EndIf */
+    }
   }
 
   { Name Hregion_i_2D ; Type Vector ;
