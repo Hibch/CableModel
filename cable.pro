@@ -248,6 +248,6 @@ EndIf
 If (Flag_AnalysisType ==1)
   Include "darwin_formulation.pro";
 EndIf
-If (Flag_AnalysisType > 2)
+If (Flag_AnalysisType > 1)
   Include "magneto-thermal_formulation.pro";
 EndIf

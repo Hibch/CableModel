@@ -51,7 +51,7 @@ Resolution {
 
       Generate[Sys_Ele]; Solve[Sys_Ele]; SaveSolution[Sys_Ele];
       PostOperation[Ele_Maps];
-      // PostOperation[Ele_Cuts]; // To adapt for your cable
+      PostOperation[Ele_Cuts]; // To adapt for your cable
     }
   }
 
@@ -128,6 +128,13 @@ PostOperation{
   x0 = 0; y0= 2*h/3;
   x1 = -dist_cab/2; y1 = -h/3;
   x2 = dist_cab/2; y2 = -h/3;
+
+  { Name Ele_Cuts; NameOfPostProcessing EleDyn_v;
+    Operation {
+      Print[ em , OnLine { {x2,y2,0} {x2+dc/2+ti+txlpe+to+tt+tms+tacs,y2,0} } {100},
+        Name "|E| [V/m] cut in phase 2", File "res/em_cut.pos"];
+    }
+  }
   /*
   // To adapt for your cable
   dist_cab = dc + 2*(ti+txlpe+to+tapl)+tps;
@@ -136,11 +143,5 @@ PostOperation{
   x1 = -dist_cab/2; y1 = -h/3;
   x2 =  dist_cab/2; y2 = -h/3;
  */
-  { Name Ele_Cuts; NameOfPostProcessing EleDyn_v;
-    Operation {
-      Print[ em , OnLine { {x2,y2,0} {x2+dc/2+ti+txlpe+to+tt+tms+tacs,y2,0} } {100},
-        Name "|E| [V/m] cut in phase 2", File "res/em_cut.pos"];
-    }
-  }
 
 }

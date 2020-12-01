@@ -125,14 +125,15 @@ Printf("",bnd_EMdom());
 cl = dtot/s;
 // Characteristic length { Point{:} } = cl;
 Characteristic Length { PointsOf{ Surface{sur_bed(), sur_arm(), sur_out()}; } } = cl/16;
-Characteristic Length { PointsOf{ Surface{sur_wire(), sur_screen_in(), sur_insul(), sur_screen_out()}; } } = cl/32;
+Characteristic Length { PointsOf{ Surface{sur_wire(), sur_screen_in(), sur_screen_out()}; } } = cl/32;
+Characteristic Length { PointsOf{ Surface{sur_insul()}; } } = cl/64;
 Characteristic Length { PointsOf{ Surface{sur_tape(), sur_metal_sheath(), sur_anti_cor_sheath()}; } } = cl/32;
 Characteristic Length { PointsOf{ Surface{sur_fill()}; } } = cl/32;
 Characteristic Length { PointsOf{ Line{bnd_EMdom(1)}; } } = 2*cl;
 Characteristic Length { PointsOf{ Surface{sur_waterout()}; Line{bnd()}; } } = 5*cl;
 
 If(Flag_defect_in_XLPE)
-  Characteristic Length { PointsOf{ Surface{defect}; } } = cl/32;
+  Characteristic Length { PointsOf{ Surface{defect}; } } = cl/64;
 EndIf
 
 
